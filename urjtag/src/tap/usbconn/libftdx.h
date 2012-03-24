@@ -53,8 +53,29 @@
 #endif
 
 #define URJ_DECLARE_FTDX_CABLE(v, p, d, n, c) \
-	_URJ_DECLARE_FTDI_CABLE(v, p, "ftdi"d, n, c##_ftdi) \
-	_URJ_DECLARE_FTD2XX_CABLE(v, p, "ftd2xx"d, n, c##_ftd2xx)
+       _URJ_DECLARE_FTDI_CABLE(v, p, "ftdi"d, n, c##_ftdi) \
+       _URJ_DECLARE_FTD2XX_CABLE(v, p, "ftd2xx"d, n, c##_ftd2xx)
+
+typedef struct
+{
+    /* USB device information */
+    unsigned int vid;
+    unsigned int pid;
+    struct ftdi_context *fc;
+    char *serial;
+    /* ftdi interface selection */
+    unsigned int interface;
+    unsigned int index;
+    /* send and receive buffer handling */
+    uint32_t send_buf_len;
+    uint32_t send_buffered;
+    uint8_t *send_buf;
+    uint32_t recv_buf_len;
+    uint32_t to_recv;
+    uint32_t recv_write_idx;
+    uint32_t recv_read_idx;
+    uint8_t *recv_buf;
+} ftdi_param_t;
 
 void ftdx_usbcable_help (urj_log_level_t ll, const char *cablename);
 

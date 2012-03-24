@@ -57,6 +57,11 @@ libtap_la_SOURCES += \
 	cable/arcom.c
 endif
 
+if ENABLE_CABLE_ARDUIGGLER
+libtap_la_SOURCES += \
+	cable/arduiggler.c
+endif
+
 if ENABLE_CABLE_BYTEBLASTER
 libtap_la_SOURCES += \
 	cable/byteblaster.c

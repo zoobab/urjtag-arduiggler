@@ -40,27 +40,6 @@
 #include "libftdx.h"
 #include "../usbconn.h"
 
-typedef struct
-{
-    /* USB device information */
-    unsigned int vid;
-    unsigned int pid;
-    struct ftdi_context *fc;
-    char *serial;
-    /* ftdi interface selection */
-    unsigned int interface;
-    unsigned int index;
-    /* send and receive buffer handling */
-    uint32_t send_buf_len;
-    uint32_t send_buffered;
-    uint8_t *send_buf;
-    uint32_t recv_buf_len;
-    uint32_t to_recv;
-    uint32_t recv_write_idx;
-    uint32_t recv_read_idx;
-    uint8_t *recv_buf;
-} ftdi_param_t;
-
 static int usbconn_ftdi_common_open (urj_usbconn_t *conn, urj_log_level_t ll);
 static void usbconn_ftdi_free (urj_usbconn_t *conn);
 

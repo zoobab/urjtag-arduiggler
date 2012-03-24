@@ -644,6 +644,7 @@ URJ_DRIVER_SET([bus], [
 # Enable cable drivers
 URJ_DRIVER_SET([cable], [
 	arcom
+	arduiggler
 	byteblaster
 	dlc5
 	ea253

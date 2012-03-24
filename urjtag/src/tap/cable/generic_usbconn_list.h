@@ -74,6 +74,9 @@ _URJ_USB(ice100Bw)
 #ifdef ENABLE_CABLE_VSLLINK
 _URJ_USB(vsllink)
 #endif
+#ifdef ENABLE_CABLE_ARDUIGGLER
+_URJ_USB_FTDX(arduiggler)
+#endif
 
 #undef _URJ_USB_FTDI
 #undef _URJ_USB_FTD2XX
