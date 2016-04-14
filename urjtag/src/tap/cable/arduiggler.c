@@ -121,6 +121,7 @@ arduiggler_init (urj_cable_t *cable)
     /* need to change the default baud rate from libftdi.c
      * to the actual one used by the cable
      */
+/*
     ftdi_param_t *fp = cable->link.usb->params;
     int r = ftdi_set_baudrate(fp->fc, BAUD_RATE);
 
@@ -128,7 +129,7 @@ arduiggler_init (urj_cable_t *cable)
         urj_warning (_("cannot change baud rate\n"));
         return URJ_STATUS_FAIL;
     }
-
+*/
     urj_tap_cable_cx_cmd_queue (cmd_root, 0);
     urj_tap_cable_cx_cmd_push (cmd_root, CMD_RESET);
     urj_tap_cable_cx_xfer (cmd_root, NULL, cable, URJ_TAP_CABLE_COMPLETELY);
