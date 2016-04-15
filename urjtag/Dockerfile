@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 MAINTAINER Benjamin Henrion <zoobab@gmail.com>
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y -q
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q --force-yes build-essential pkg-config autoconf autopoint libtool automake libftdi-dev python-dev
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q --force-yes build-essential pkg-config autoconf autopoint libtool automake libftdi-dev python-dev usbutils
 
 RUN useradd -d /home/urjtag -m -s /bin/bash urjtag
 RUN echo "urjtag ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/urjtag
