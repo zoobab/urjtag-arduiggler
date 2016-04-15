@@ -1,0 +1,107 @@
+== Arduiggler protocol ==
+
+
+
+=== Abstract ===
+
+This document describes the protocol needed to control the Arduino Wiggler Cable Simulator (Arduiggler).
+
+
+
+=== Revision History ===
+
+The current document revision is 2.0.
+
+==== ver 2.0 ====
+
+protocol changed to ease interface with urjtag[[br]]
+[http://urjtag.sourceforge.net]
+
+==== ver 1.0 ====
+
+functionality originally written for tjtag + JTMOD[[br]]
+[http://www.dd-wrt.com/phpBB2/viewtopic.php?p=435578&sid=0c7c7b114dc7239be2620514cecbe2d8]
+
+
+
+=== RS232 (UART) ===
+
+Arduino has a [http://www.ftdichip.com/Products/ICs/FT232R.htm FT232RL USB-to-UART bridge] which allows it to show as a UART port on all PCs with USB ports.
+RS232 communication with Arduino defaults to 115200 bps, 8N1 (8 data bits, no parity, 1 stop bit) and no flow control.
+
+
+
+=== Protocol Description ===
+
+The protocol consists of messages between the host and the Arduino board. As much as possible the mesages are using ASCII characters to ease quick debuging using a serial console.
+
+The command message from the host to the Arduino board has at least 1 byte representing the command code.
+
+The reply mesage from the Arduino board has at least 2 bytes representing the status of the program after the command execution.
+
+==== CMD_RESET (0x74) ==== #CMD_RESET
+
+'''CMD_RESET''' is ASCII for t.[[br]]
+This command will reset all signals to the default values (0).
+
+The response to this command is ''STATUS_OK'' (0x6F6B - ASCII for ok).
+
+==== CMD_STATUS (0x3F) ==== #CMD_STATUS
+
+'''CMD_STATUS''' is ASCII for ?.[[br]]
+This command does nothing.
+The response to this command is the last status of the board.
+
+==== CMD_GETVER (0x61) ==== #CMD_GETVER
+
+'''CMD_GETVER''' is ASCII for a.[[br]]
+This command does nothing.
+The response to this command is the SW version of the board followed by ''STATUS_OK'' (0x6F6B - ASCII for ok).
+Currently the SW version is a 4 byte string in the form ''M.mm'' where ''M'' is the major version and ''mm'' is the minor version.
+
+==== CMD_SEND (0x73) ==== #CMD_SE1ND
+
+'''CMD_SEND''' is ASCII for s.[[br]]
+'''CMD_SEND''' must be followed by 2 parameter bytes: ''data'' and ''nClocks''.[[br]]
+This command will set the TMS and TDI signals according to the ''data'' byte, then toggle TCK the number of times specified by ''nClocks''.
+
+The response to this command is ''STATUS_OK'' (0x6F6B - ASCII for ok).
+
+===== parameter: ''data'' =====
+
+|| bit7 || bit6 || bit5 || bit4 || bit3 || bit2 || bit1 || bit0 ||
+||  -   ||  -   ||  -   ||  -   ||  -   || TMS  ||  -   || TDI  ||
+
+==== CMD_READ (0x72) ==== #CMD_READ
+
+'''CMD_READ''' is ASCII for r.[[br]]
+This command will read the value of TDO.
+
+The response to this command is the value of TDO as either 0x30 or 0x31 (ASCII for 0 or 1) followed by ''STATUS_OK'' (0x6F6B - ASCII for ok).
+
+==== CMD_FORCE (0x66) ==== #CMD_FORCE
+
+'''CMD_FORCE''' is ASCII for f.[[br]]
+'''CMD_FORCE''' must be followed by 1 parameter bytes: ''data''
+This command will set the value of all signals according to the ''data'' byte.
+
+The response to this command is ''STATUS_OK'' (0x6F6B - ASCII for ok).
+
+===== parameter: ''data'' =====
+
+|| bit7 || bit6 || bit5 || bit4 || bit3 || bit2 || bit1 || bit0 ||
+||  -   ||  -   ||  -   || GP0  || TRST || TMS  || TCK  || TDI  ||
+
+It is recommended to send '''[#CMD_RESET CMD_RESET]''' after a sequence of '''CMD_FORCE'''.
+
+==== other ====
+
+The response to any other command message is ''STATUS_ERR1'' (0x6531 - ASCII for e1).
+
+
+
+=== Signal Use ===
+
+ * TRST (digital pin 6), TCK (digital pin 4), TMS (digital pin 3), TDI (digital pin 5): outputs
+ * TDO (digital pin 7): input
+ * GP0 (digital pin 2): output

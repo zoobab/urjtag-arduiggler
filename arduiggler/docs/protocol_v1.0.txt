@@ -1,0 +1,55 @@
+== Arduiggler protocol v1.0 ==
+
+
+
+=== Abstract ===
+
+This document describes the protocol needed to control the Arduino Wiggler Cable Simulator (Arduiggler).
+
+
+
+=== Revision History ===
+
+The current document revision is 1.0.
+
+==== ver 1.0 ====
+
+functionality originally written for tjtag + JTMOD[[br]]
+[http://www.dd-wrt.com/phpBB2/viewtopic.php?p=435578&sid=0c7c7b114dc7239be2620514cecbe2d8]
+
+
+
+=== RS232 (UART) ===
+
+Arduino has a [http://www.ftdichip.com/Products/ICs/FT232R.htm FT232RL USB-to-UART bridge] which allows it to show as a UART port on all PCs with USB ports.
+RS232 communication with Arduino defaults to 115200 bps, 8N1 (8 data bits, no parity, 1 stop bit) and no flow control.
+
+
+
+=== Protocol Description ===
+
+The protocol consists of one byte of multiplexed data + command:
+
+|| bit7 || bit6 || bit5 || bit4 || bit3 || bit2 || bit1 || bit0 ||
+|| TDO  || cmd1 || cmd0 || TRST || TDI  || TCK  || TMS  || RSTb ||
+
+==== Commands ====
+
+ CMD_RESET (0b00)::
+  This will reset all signals to the default values (0). The response to this command is RPLY_RESET (0x42).
+ CMD_SEND (0b01)::
+  This will set the signals to the values specified in the received byte. The response to this command is RPLY_SEND (0x4B).
+ CMD_READ (0b10)::
+  The response to this command is the value of TDO as either 0x80 or 0x00.
+ CMD_RSVD (0b11)::
+  Defined in the original code but never used.
+
+The response to any other invalid command is RPLY_INVALID (0x7F).
+
+
+
+=== Signal Use ===
+
+ * TRST (digital pin 6), TCK (digital pin 4), TMS (digital pin 3), TDI (digital pin 5): outputs
+ * TDO (digital pin 7): input
+ * RSTb (digital pin 2): output, active low. Not really sure what it is intended to reset.
